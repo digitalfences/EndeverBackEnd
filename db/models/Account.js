@@ -6,7 +6,8 @@ const Account = new Schema({
     Bio: String,
     Repositories: [String],
     MatchedUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    Feed: [{type: Schema.Types.ObjectId, ref: 'Chat'}]
+    Feed: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    Messages: [{type: Schema.Types.ObjectId, ref: 'MessageHistory'}]
 })
 
 module.exports = mongoose.model('Account', Account)
