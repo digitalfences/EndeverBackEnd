@@ -12,12 +12,14 @@ const logins = [
 // create and populate a user 
 // must also create the reference objects in separate collections of the db
 // so that population is possible
-
+console.log('running');
 User.deleteMany({}).then(() =>{
     //necessary user elements: account
     //left to routes: all populating, Array 
     //
-    for (let i = 0; i < testusers; i++){
+    console.log("beginning loop")
+    for (let i = 0; i < testusers.length; i++){
+        console.log(`run ${i}`)
         let login = new Login({
             Username: testusers[i], 
             Token: logins[i]
@@ -31,7 +33,6 @@ User.deleteMany({}).then(() =>{
         }
         User.create(user).then(responseData=>{
             console.log(responseData);
-            process.exit()
         })
     }   
-}).catch(err => {console.log(err);process.exit()})
+})
