@@ -5,38 +5,40 @@ const Account = require('./models/Account.js')
 
 
 const testusers = ["galen", 'daniel', 'shimin'];
-const logins = [
-    {Token: 'galengit'}, {Token: 'danielgit'}, {Token:'shimingit'}];
+const logins = ['galengit', 'danielgit', 'shimingit'];
 
 // should delete all users in database and for each test user
 // create and populate a user 
 // must also create the reference objects in separate collections of the db
 // so that population is possible
 console.log('running');
-User.deleteMany({}).then(() =>{
-    //necessary user elements: account
-    //left to routes: all populating, Array 
-    //
-    console.log("beginning loop")
-    for (let i = 0; i < testusers.length; i++){
-        console.log(`run ${i}`)
-        let login = new Login({
-            Username: testusers[i], 
-            Token: logins[i]
-        })
-        let account = new Account({
-            Picture: '',
-            Bio: '',
-            Repositories: ['']
-        })
-        let user = {
-            Login : login._id,
-            Account : account._id
+Account.deleteMany({}).then(() => Login.deleteMany({})).then(() => {
+    User.deleteMany({})})
+    .then(() => {
+        //necessary user elements: account
+        //left to routes: all populating, Array 
+        //
+        console.log("beginning loop")
+        for (let i = 0; i < testusers.length; i++) {
+            console.log(`run ${i}`)
+            let login = new Login({
+                Username: testusers[i],
+                Token: logins[i]
+            })
+            let account = new Account({
+                Picture: '',
+                Bio: '',
+                Repositories: ['']
+            })
+            let user = {
+                Login: login._id,
+                Account: account._id
+            }
+            User.create(user).then(responseData => {
+                console.log(responseData);
+            })
+            Account.create(account);
+            Login.create(login);
         }
-        User.create(user).then(responseData=>{
-            console.log(responseData);
-        })
-        Account.create(account);
-        Login.create(login);
-    }   
-})
+    })
+
