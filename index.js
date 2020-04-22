@@ -20,7 +20,7 @@ app.get('/users', (req,res)=>{
     User.find().populate('Login').populate('Account').then(user => res.json(user))
 })
 app.get('/account/name/:userName', (req,res)=>{
-    User.find({Username : req.params.userName}).populate('Login').populate('Account').then(user => res.json(user))
+    User.find({UserName : req.params.userName}).populate('Login').populate('Account').then(user => res.json(user))
 })
 app.get('/account/id/:id', (req,res)=> {
     User.find({_id: req.params.id}).populate('Login').populate('Account').then(user => res.json(user))
