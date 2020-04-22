@@ -19,10 +19,10 @@ app.get('/', (req,res) =>{
 app.get('/users', (req,res)=>{
     User.find().populate('Login').populate('Account').then(user => res.json(user))
 })
-app.get('/account/:userName', (req,res)=>{
+app.get('/account/name/:userName', (req,res)=>{
     User.find({Login: {Username : req.params.userName}}).populate('Login').populate('Account').then(user => res.json(user))
 })
-app.get('/account/:id', (req,res)=> {
+app.get('/account/id/:id', (req,res)=> {
     User.find({_id: req.params.id}).populate('Login').populate('Account').then(user => res.json(user))
 })
  /**
