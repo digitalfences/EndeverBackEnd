@@ -12,6 +12,10 @@ app.use((req,res,next) => {
     next();
 });
 
+app.get('/', (req,res) =>{
+    res.redirect('/users');
+})
+
 app.get('/users', (req,res)=>{
     User.find().populate('Login').populate('Account').then(user => res.json(user))
 })
@@ -50,6 +54,15 @@ app.post('/', (req,res) => {
     })
     Login.create(login);
     Account.create(account);
+})
+app.put('/users/:id', (req,res) =>{
+    User.findOneAndUpdate({_id: req.params.id}, req.body).then(user => {
+        res.json(user)
+    })
+})
+
+app.delete('/users/:id', (req,res) =>{
+    User.findOneByDelete({_id: req.params.id}).then(user => res.json(user))
 })
 
 app.set('port', process.env.PORT || 8080)

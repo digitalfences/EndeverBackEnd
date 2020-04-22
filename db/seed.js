@@ -13,7 +13,7 @@ const logins = ['galengit', 'danielgit', 'shimingit'];
 // so that population is possible
 console.log('running');
 Account.deleteMany({}).then(() => Login.deleteMany({})).then(() => {
-    User.deleteMany({})})
+    User.deleteMany({})
     .then(() => {
         //necessary user elements: account
         //left to routes: all populating, Array 
@@ -41,4 +41,4 @@ Account.deleteMany({}).then(() => Login.deleteMany({})).then(() => {
             Login.create(login);
         }
     })
-
+})
