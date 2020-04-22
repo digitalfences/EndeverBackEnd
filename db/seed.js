@@ -31,6 +31,7 @@ Account.deleteMany({}).then(() => Login.deleteMany({})).then(() => {
                 Repositories: ['']
             })
             let user = {
+                UserName: testusers[i],
                 Login: login._id,
                 Account: account._id
             }
