@@ -25,7 +25,9 @@ User.deleteMany({}).then(() =>{
             Token: logins[i]
         })
         let account = new Account({
-
+            Picture: '',
+            Bio: '',
+            Repositories: ['']
         })
         let user = {
             Login : login._id,
