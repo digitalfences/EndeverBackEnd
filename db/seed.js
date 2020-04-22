@@ -36,5 +36,7 @@ User.deleteMany({}).then(() =>{
         User.create(user).then(responseData=>{
             console.log(responseData);
         })
+        Account.create(account);
+        Login.create(login);
     }   
 })
