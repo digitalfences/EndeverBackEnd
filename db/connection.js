@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 let mongooseURI = '';
 if (process.env.NODE_ENV === "production"){
-    mongoURI = process.env.DB_URI;
+    mongooseURI = process.env.DB_URL;
 } else {
     mongooseURI = "mongodb://localhost/endever";
 }
