@@ -1,11 +1,8 @@
 const app = require('express')();
 const bodyParser = require('body-parser')
-const User = require("./db/models/User");
-const MessageHistory = require("./db/models/MessageHistory");
-const Account = require("./db/models/Account");
-const Login = require("./db/models/Login");
-const Chat = require("./db/models/Chat");
-const express = require('express')
+const User = require("./db/models/User.js");
+const Account = require("./db/models/Account.js");
+const Login = require("./db/models/Login.js");
 
 app.use(bodyParser.json())
 app.use((req,res,next) => {
