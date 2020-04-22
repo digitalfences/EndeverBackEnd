@@ -6,7 +6,6 @@ const Account = require("./models/Account");
 const Login = require("./models/Login");
 const Chat = require("./models/Chat");
 const express = require('express')
-const app = express();
 
 app.use(bodyParser.json())
 app.use((req,res,next) => {
