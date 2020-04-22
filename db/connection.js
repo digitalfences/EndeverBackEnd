@@ -6,5 +6,8 @@ if (process.env.NODE_ENV === "production"){
     mongooseURI = "mongodb://localhost/endever";
 }
 
+
+//test
+
 mongoose.connect(mongooseURI, {useNewUrlParser: true});
 module.exports = mongoose;
