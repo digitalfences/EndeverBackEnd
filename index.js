@@ -112,7 +112,8 @@ app.get(
     // successRedirect: "http://localhost:3000/user/",
   }),
   function (req, res) {
-    res.redirect(`http://localhost:3000/user/${req.user.Username}`);
+    //res.redirect(`http://localhost:3000/user/${req.user.Username}`);
+    res.json(req)
   }
 );
 
