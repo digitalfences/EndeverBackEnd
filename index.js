@@ -12,23 +12,24 @@ const userRouter = require("./routes/userRouter");
 
 const GITHUB_CLIENT_ID = "fda597fe607c7161f2a0"; // or get from process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = "620b1562c7c1cc57112fb3b54a2978df22f98e37"; // or get from process.env.GITHUB_CLIENT_SECRET
-const GITHUB_CALLBACK_URL = "http://localhost:4000/auth/github/callback"; // or get from process.env.GITHUB_CALLBACK_URL
+const GITHUB_CALLBACK_URL = "http://tigerkingbackend.herokuapp/auth/github/callback"; // or get from process.env.GITHUB_CALLBACK_URL
 app.use(cors());
 
 app.use(bodyParser.json())
 
-app.use((req,res,next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'POST,GET,PUT,DELETE');
-    res.header('Access-Control-Allow-Headers','Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-    next();
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Methods", "POST,GET,PATCH,PUT,DELETE");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
+  next();
 });
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("http://localhost:3000/login");
+  res.redirect("http://localhost:8080/login");
 }
 
 passport.serializeUser(function (user, done) {
@@ -97,11 +98,11 @@ app.get("/login", (req, res) => {
 app.get(
   "/auth/github",
   passport.authenticate("github", { scope: ["read:user"] }), /// Note the scope here
-  function (req, res) {}
+  function (req, res) { }
 );
 
 //app.get("/secret", ensureAuthenticated, (req, res) => {
- // res.send(`<h2>yo ${req.user}</h2>`);
+// res.send(`<h2>yo ${req.user}</h2>`);
 //});
 
 app.get(
@@ -115,59 +116,59 @@ app.get(
   }
 );
 
-app.get('/users', (req,res)=>{
-    User.find().populate('Login').populate('Account').then(user => res.json(user))
+app.get('/users', (req, res) => {
+  User.find().populate('Login').populate('Account').then(user => res.json(user))
 })
-app.get('/account/name/:userName', (req,res)=>{
-    User.find({UserName : req.params.userName}).populate('Login').populate('Account').then(user => res.json(user))
+app.get('/account/name/:userName', (req, res) => {
+  User.find({ UserName: req.params.userName }).populate('Login').populate('Account').then(user => res.json(user))
 })
-app.get('/account/id/:id', (req,res)=> {
-    User.find({_id: req.params.id}).populate('Login').populate('Account').then(user => res.json(user))
+app.get('/account/id/:id', (req, res) => {
+  User.find({ _id: req.params.id }).populate('Login').populate('Account').then(user => res.json(user))
 })
- /**
-  * req.body
-  * {
-  *    Login: {
-  *         Token: '',
-  *         Name: ''
-  *     }
-  *    Account: {
-  *         Picture: '',
-  *         Bio: '',
-  *         Repositories: ['']
-  *     }
-  * }
-  */
-app.post('/', (req,res) => {
-    let login = new Login({
-        Username: req.body.Login.Username, 
-        Token: req.body.Login.Token
-    })
-    let repoArray = [];
-    repoArray.push(...req.body.Account.Repositories)
-    let account = new Account({
-        Picture: req.body.Account.Picture,
-        Bio: req.body.Account.Bio,
-        Repositories: repoArray
-    })
-    let user = {
-        Login : login._id,
-        Account : account._id
-    }
-    User.create(user).then(responseData=>{
-        console.log(responseData);
-    })
-    Login.create(login);
-    Account.create(account);
+/**
+ * req.body
+ * {
+ *    Login: {
+ *         Token: '',
+ *         Name: ''
+ *     }
+ *    Account: {
+ *         Picture: '',
+ *         Bio: '',
+ *         Repositories: ['']
+ *     }
+ * }
+ */
+app.post('/', (req, res) => {
+  let login = new Login({
+    Username: req.body.Login.Username,
+    Token: req.body.Login.Token
+  })
+  let repoArray = [];
+  repoArray.push(...req.body.Account.Repositories)
+  let account = new Account({
+    Picture: req.body.Account.Picture,
+    Bio: req.body.Account.Bio,
+    Repositories: repoArray
+  })
+  let user = {
+    Login: login._id,
+    Account: account._id
+  }
+  User.create(user).then(responseData => {
+    console.log(responseData);
+  })
+  Login.create(login);
+  Account.create(account);
 })
-app.put('/users/:id', (req,res) =>{
-    User.findOneAndUpdate({_id: req.params.id}, req.body).then(user => {
-        res.json(user)
-    })
+app.put('/users/:id', (req, res) => {
+  User.findOneAndUpdate({ _id: req.params.id }, req.body).then(user => {
+    res.json(user)
+  })
 })
 
-app.delete('/users/:id', (req,res) =>{
-    User.findOneByDelete({_id: req.params.id}).then(user => res.json(user))
+app.delete('/users/:id', (req, res) => {
+  User.findOneByDelete({ _id: req.params.id }).then(user => res.json(user))
 })
 
 app.get("/logout", function (req, res) {
