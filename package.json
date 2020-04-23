@@ -18,8 +18,18 @@
   },
   "homepage": "https://github.com/digitalfences/TigerKingBackEnd#readme",
   "dependencies": {
+<<<<<<< HEAD
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+=======
+    "body-parser": "^1.19.0",
+>>>>>>> master
     "express": "^4.17.1",
-    "mongoose": "^5.9.10"
+    "express-session": "^1.17.1",
+    "mongoose": "^5.9.10",
+    "node-fetch": "^2.6.0",
+    "passport": "^0.4.1",
+    "passport-github2": "^0.1.12"
   }
 }
