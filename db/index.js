@@ -12,7 +12,6 @@ const userRouter = require("./routes/userRouter");
 const GITHUB_CLIENT_ID = "fda597fe607c7161f2a0"; // or get from process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = "620b1562c7c1cc57112fb3b54a2978df22f98e37"; // or get from process.env.GITHUB_CLIENT_SECRET
 const GITHUB_CALLBACK_URL = "http://localhost:4000/auth/github/callback"; // or get from process.env.GITHUB_CALLBACK_URL
-const LoginController = require("./controllers/LoginController");
 
 app.use(cors());
 
@@ -40,12 +39,7 @@ passport.use(
     },
     function (accessToken, refreshToken, profile, done) {
       // asynchronous verification, for effect...
-      console.log({ accessToken, refreshToken, profile });
-      console.log("profile8888888888888888888");
-      console.log(profile);
-      //   let user = LoginController.checkAndSave(profile._json);
-      //   console.log("back");
-      //   console.log(user);
+
       let userInfo = profile._json;
       let userName = userInfo.login;
       console.log("checkAndSave the user");
@@ -70,23 +64,10 @@ passport.use(
             });
           });
         } else {
-          console.log("already");
-          console.log(loginUser);
           return done(null, loginUser);
-          //   return loginUser;
         }
         // set the session
       });
-      // an example of how you might save a user
-      //   new User({ username: profile.username }).fetch().then((user) => {
-      //     if (!user) {
-      //       user = User.forge({ username: profile.username });
-      //     }
-
-      //     user.save({ profile: profile, access_token: accessToken }).then(() => {
-      //       return done(null, user);
-      //     });
-      //   });
     }
   )
 );
@@ -123,14 +104,6 @@ app.get(
     // successRedirect: "http://localhost:3000/user/",
   }),
   function (req, res) {
-    console.log("callback");
-    console.log(res);
-
-    console.log("request 8888888888888888888");
-    console.log(req);
-    console.log(req.user.Username);
-    // console.log(req.session.passport.user);
-    // req.session.user=
     res.redirect(`http://localhost:3000/user/${req.user.Username}`);
   }
 );
