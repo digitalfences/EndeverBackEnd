@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
-let mongooseURI = 'mongodb://localhost/endever';
+let mongooseURI = '';
+if (process.env.NODE_ENV === "production"){
+    mongooseURI = process.env.DB_URL;
+} else {
+    mongooseURI = "mongodb://localhost/endever";
+}
+
+
+//test
 
 mongoose.connect(mongooseURI, {useNewUrlParser: true});
 module.exports = mongoose;
