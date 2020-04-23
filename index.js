@@ -8,10 +8,11 @@ const path = require("path");
 const serve = require("koa-static");
 const route = require("koa-route");
 const axios = require("axios");
+const LoginController = require("./db/controllers/LoginController");
 
 const app = new Koa();
 
-const main = serve(path.join(__dirname + "/"));
+// const main = serve(path.join(__dirname + "/"));
 
 const oauth = async (ctx) => {
   const requestToken = ctx.request.query.code;
@@ -41,13 +42,15 @@ const oauth = async (ctx) => {
     },
   });
   console.log(result.data);
-  const name = result.data.name;
+  LoginController.checkAndSave(result.data);
+  //   const name = result.data.name;
+  //   console.log(ctx);
   // ctx.response.json(result.data);
 
-  // ctx.response.redirect(`/welcome.html?name=${result.data}`);
+  ctx.response.redirect(`http://http://localhost:3000/user`);
 };
 
-app.use(main);
+// app.use(main);
 app.use(route.get("/oauth/callback", oauth));
 
 app.listen(4000);
