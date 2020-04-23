@@ -28,7 +28,7 @@ function checkAndSave(userInfo) {
 function checkUserOrSave(profile, done) {
   let userInfo = profile._json;
   let userName = userInfo.login;
-  Login.findOne({ Username: userName }).then((loginUser) => {
+  User.findOne({ UserName: userName }).then((loginUser) => {
     if (loginUser === null || loginUser === undefined) {
       // save the new user's data
       let _loginUser = { Username: userName };
@@ -43,7 +43,7 @@ function checkUserOrSave(profile, done) {
           Repositories: repos,
         };
         Account.create(account).then((_account) => {
-          let user = { Login: _login._id, Account: _account._id };
+          let user = { UserName: _login.Username, Login: _login._id, Account: _account._id };
           User.create(user).then((_user) => {
             return done(null, _user);
           });
