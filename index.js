@@ -12,7 +12,7 @@ const userRouter = require("./routes/userRouter");
 
 const GITHUB_CLIENT_ID = "fda597fe607c7161f2a0"; // or get from process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = "620b1562c7c1cc57112fb3b54a2978df22f98e37"; // or get from process.env.GITHUB_CLIENT_SECRET
-const GITHUB_CALLBACK_URL = "http://tigerkingbackend.herokuapp/auth/github/callback"; // or get from process.env.GITHUB_CALLBACK_URL
+const GITHUB_CALLBACK_URL = "https://tigerkingbackend.herokuapp.com/auth/github/callback"; // or get from process.env.GITHUB_CALLBACK_URL
 app.use(cors());
 
 app.use(bodyParser.json())
