@@ -8,6 +8,7 @@ const Login = require("./models/Login");
 const Account = require("./models/Account");
 const User = require("./models/User");
 const userRouter = require("./routes/userRouter");
+const utilFunctions = require("./utilFunctions");
 
 const GITHUB_CLIENT_ID = "fda597fe607c7161f2a0"; // or get from process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = "620b1562c7c1cc57112fb3b54a2978df22f98e37"; // or get from process.env.GITHUB_CLIENT_SECRET
@@ -38,36 +39,11 @@ passport.use(
       callbackURL: GITHUB_CALLBACK_URL,
     },
     function (accessToken, refreshToken, profile, done) {
+      console.log("profile");
+      console.log(profile);
       // asynchronous verification, for effect...
 
-      let userInfo = profile._json;
-      let userName = userInfo.login;
-      console.log("checkAndSave the user");
-      Login.findOne({ Username: userName }).then((loginUser) => {
-        if (loginUser === null || loginUser === undefined) {
-          // save the new user's data
-          // console.log("create new date");
-          let _loginUser = { Username: userName };
-          Login.create(_loginUser).then((_login) => {
-            console.log("user create Success!");
-            //   console.log(_login);
-            let account = { Picture: userInfo.avatar_url };
-            Account.create(account).then((_account) => {
-              // console.log(_account);
-              let user = { Login: _login._id, Account: _account._id };
-              User.create(user).then((_user) => {
-                console.log("created user");
-                console.log(_user);
-                // return _user;
-                return done(null, _user);
-              });
-            });
-          });
-        } else {
-          return done(null, loginUser);
-        }
-        // set the session
-      });
+      utilFunctions.checkUserOrSave(profile, done);
     }
   )
 );
@@ -119,7 +95,7 @@ app.get(
 app.get("/user", function (req, res) {
   console.log("callback");
   console.log(res);
-  res.redirect(`http://localhost:3000/user/life2free`);
+  res.redirect(`http://localhost:3000/user`);
 });
 
 app.get("/logout", function (req, res) {

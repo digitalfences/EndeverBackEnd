@@ -1,56 +1,107 @@
-// Fill in your client ID and client secret that you obtained
-// while registering the application
-const clientID = "fda597fe607c7161f2a0";
-const clientSecret = "620b1562c7c1cc57112fb3b54a2978df22f98e37";
+const express = require("express");
+const app = express();
+const passport = require("passport");
+const session = require("express-session");
+const cors = require("cors");
+const GitHubStrategy = require("passport-github2").Strategy;
+const userRouter = require("./db/routes/userRouter");
+const utilFunctions = require("./db/utilFunctions");
+const configs = require("./db/configs");
 
-const Koa = require("koa");
-const path = require("path");
-const serve = require("koa-static");
-const route = require("koa-route");
-const axios = require("axios");
-const LoginController = require("./db/controllers/LoginController");
+// const GITHUB_CLIENT_ID = "fda597fe607c7161f2a0"; // or get from process.env.GITHUB_CLIENT_ID
+// const GITHUB_CLIENT_SECRET = "620b1562c7c1cc57112fb3b54a2978df22f98e37"; // or get from process.env.GITHUB_CLIENT_SECRET
+// const GITHUB_CALLBACK_URL = "http://localhost:4000/auth/github/callback"; // or get from process.env.GITHUB_CALLBACK_URL
 
-const app = new Koa();
+app.use(cors());
 
-// const main = serve(path.join(__dirname + "/"));
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect(`${configs.FRONTEND_URL}/login`);
+}
 
-const oauth = async (ctx) => {
-  const requestToken = ctx.request.query.code;
-  console.log("authorization code:", requestToken);
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
 
-  const tokenResponse = await axios({
-    method: "post",
-    url:
-      "https://github.com/login/oauth/access_token?" +
-      `client_id=${clientID}&` +
-      `client_secret=${clientSecret}&` +
-      `code=${requestToken}`,
-    headers: {
-      accept: "application/json",
+passport.deserializeUser(function (obj, done) {
+  done(null, obj);
+});
+
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: configs.GITHUB_CLIENT_ID,
+      clientSecret: configs.GITHUB_CLIENT_SECRET,
+      callbackURL: configs.GITHUB_CALLBACK_URL,
     },
-  });
+    function (accessToken, refreshToken, profile, done) {
+      console.log("profile");
+      console.log(profile);
+      // asynchronous verification, for effect...
 
-  const accessToken = tokenResponse.data.access_token;
-  console.log(`access token: ${accessToken}`);
+      utilFunctions.checkUserOrSave(profile, done);
+    }
+  )
+);
+app.use(
+  session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
-  const result = await axios({
-    method: "get",
-    url: `https://api.github.com/user`,
-    headers: {
-      accept: "application/json",
-      Authorization: `token ${accessToken}`,
-    },
-  });
-  console.log(result.data);
-  LoginController.checkAndSave(result.data);
-  //   const name = result.data.name;
-  //   console.log(ctx);
-  // ctx.response.json(result.data);
+app.get("/", (req, res) => {
+  res.send("<a href='/secret'>Access Secret Area</a>");
+});
 
-  ctx.response.redirect(`http://http://localhost:3000/user`);
-};
+app.get("/login", (req, res) => {
+  //   res.send("<a href='/auth/github'>Sign in With GitHub</a>");
+  //   res.redirect("http://localhost:3000/login");
+  res.redirect("/auth/github");
+});
 
-// app.use(main);
-app.use(route.get("/oauth/callback", oauth));
+app.get("/secret", ensureAuthenticated, (req, res) => {
+  res.send(`<h2>yo ${req.user}</h2>`);
+});
 
-app.listen(4000);
+app.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] }), /// Note the scope here
+  function (req, res) {}
+);
+
+app.get(
+  "/auth/github/callback",
+  passport.authenticate("github", {
+    failureRedirect: "/logout",
+    // successRedirect: "http://localhost:3000/user/",
+  }),
+  function (req, res) {
+    res.redirect(`${configs.FRONTEND_URL}/user/${req.user.Username}`);
+  }
+);
+
+// app.get(
+//   "/auth/github/callback",
+//   passport.authenticate("github", {
+//     failureRedirect: "/logout",
+//     successRedirect: "/user",
+//   })
+// );
+
+app.get("/user", function (req, res) {
+  console.log("callback");
+  console.log(res);
+  res.redirect(`${configs.FRONTEND_URL}/user`);
+});
+
+app.get("/logout", function (req, res) {
+  req.logout();
+  res.redirect(`${configs.FRONTEND_URL}`);
+});
+
+app.use(userRouter);
+
+const port = process.env.PORT || configs.PORT;
+app.listen(port, () => console.log(`listening on port ${port}`));
