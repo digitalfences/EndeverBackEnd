@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 const User = require("./db/models/User.js");
 const Account = require("./db/models/Account.js");
 const Login = require("./db/models/Login.js");
-const userRouter = require("./routes/userRouter");
+const userRouter = require("./db/routes/userRouter");
 
 const GITHUB_CLIENT_ID = "fda597fe607c7161f2a0"; // or get from process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = "620b1562c7c1cc57112fb3b54a2978df22f98e37"; // or get from process.env.GITHUB_CLIENT_SECRET
