@@ -176,7 +176,9 @@ app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("http://localhost:3000/");
 });
-
+app.get("/message/:id", (req,res) => {
+  Account.findOne({Messages: req.params.id}).populate('Messages').then(messages => {res.json(messages)})
+})
 
 app.use(userRouter);
 app.set('port', process.env.PORT || 8080)
