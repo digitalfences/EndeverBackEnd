@@ -8,7 +8,7 @@ function checkUserOrSave(profile, done) {
   let repos = [];
   User.findOne({ UserName: userName })
     .then((user) => {
-      if (user === null) {
+      if (user === null || user === undefined) {
         repos = getRepoFromApiByUserName(userName);
       }
     })
