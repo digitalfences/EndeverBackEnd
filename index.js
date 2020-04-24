@@ -94,7 +94,7 @@ app.get(
     // successRedirect: "http://localhost:3000/user/",
   }),
   function (req, res) {
-    res.redirect(`${configs.FRONTEND_URL}/`);
+    res.redirect(`${configs.FRONTEND_URL}/user/${req.user.UserName}`);
   }
 );
 
