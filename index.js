@@ -114,9 +114,19 @@ app.get("/sessioncheck", (req, res) => {
   //   console.log(req);
   //   res.json(req.user);
   // } else {
-  console.log(req);
-  res.json({ auth: false });
+  //   console.log(req);
+  //   res.json({ auth: false });
   // }
+
+  let user = req.user;
+  // let user = req._passport.session.user;
+  if (user !== undefined) {
+    console.log(req);
+    res.json(req.user);
+  } else {
+    console.log(req);
+    res.json({ auth: false });
+  }
 });
 // app.get(
 //   "/auth/github/callback",
