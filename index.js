@@ -3,10 +3,11 @@ const app = express();
 const passport = require("passport");
 const session = require("express-session");
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
 const GitHubStrategy = require("passport-github2").Strategy;
 const userRouter = require("./db/routes/userRouter");
 const utilFunctions = require("./db/utilFunctions");
-const configs = require("./db/configs");
+const configs = require("./db/configs.js");
 const bodyParser = require('body-parser')
 const User = require("./db/models/User.js");
 const Account = require("./db/models/Account.js");
@@ -14,12 +15,16 @@ const Login = require("./db/models/Login.js");
 
 app.use(cors());
 app.use(bodyParser.json())
+app.use(cookieParser())
 
 function ensureAuthenticated(req, res, next) {
+  //console.log("ik",req.user);
+  
+  res.json({});
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect(`${configs.FRONTEND_URL}/login`);
+  //res.redirect(`${configs.FRONTEND_URL}`);
 }
 
 passport.serializeUser(function (user, done) {
@@ -33,13 +38,9 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "POST,GET,PATCH,PUT,DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   next();
 });
-
-app.use(userRouter);
-const port = process.env.PORT || configs.PORT;
-app.listen(port, () => console.log(`listening on port ${port}`));
 
 passport.use(
   new GitHubStrategy(
@@ -49,8 +50,8 @@ passport.use(
       callbackURL: configs.GITHUB_CALLBACK_URL,
     },
     function (accessToken, refreshToken, profile, done) {
-      console.log("profile");
-      console.log(profile);
+      //console.log("profile");
+      //console.log(profile);
       // asynchronous verification, for effect...
 
       utilFunctions.checkUserOrSave(profile, done);
@@ -67,18 +68,12 @@ app.get("/", (req, res) => {
   res.send("<a href='/secret'>Access Secret Area</a>");
 });
 
-
 //shimin code
 
 app.get("/login", (req, res) => {
   //   res.send("<a href='/auth/github'>Sign in With GitHub</a>");
   //   res.redirect("http://localhost:3000/login");
   res.redirect("/auth/github");
-});
-
-
-app.get("/secret", ensureAuthenticated, (req, res) => {
-  res.send(`<h2>yo ${req.user}</h2>`);
 });
 
 app.get(
@@ -94,10 +89,22 @@ app.get(
     // successRedirect: "http://localhost:3000/user/",
   }),
   function (req, res) {
-    res.redirect(`${configs.FRONTEND_URL}/user/${req.user.UserName}`);
+    console.log(req)
+    res.redirect(`${configs.FRONTEND_URL}/`);
   }
 );
 
+app.get("/sessioncheck",  (req, res) => {
+  
+  if("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+      console.log(req);
+      res.json(req.user);
+  }
+  else {
+      console.log(req);
+      res.json({auth: false});
+  }
+});
 // app.get(
 //   "/auth/github/callback",
 //   passport.authenticate("github", {
