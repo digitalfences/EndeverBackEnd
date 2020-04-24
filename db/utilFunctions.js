@@ -9,7 +9,7 @@ function checkUserOrSave(profile, done) {
   User.findOne({ UserName: userName })
     .then((user) => {
       if (user === null) {
-        repos = getRepoFromApiByUserName(user.UserName);
+        repos = getRepoFromApiByUserName(userName);
       }
     })
     .then(() => {
