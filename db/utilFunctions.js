@@ -70,4 +70,4 @@ function getRepoFromApiByUserName(userName) {
       return [];
     });
 }
-module.exports = { checkAndSave, checkUserOrSave, getRepoFromApiByUserName };
+module.exports = { checkUserOrSave, getRepoFromApiByUserName };
