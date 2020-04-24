@@ -3,7 +3,6 @@ const app = express();
 const passport = require("passport");
 const session = require("express-session");
 const cors = require("cors");
-const cookieParser = require('cookie-parser');
 const GitHubStrategy = require("passport-github2").Strategy;
 const userRouter = require("./db/routes/userRouter");
 const utilFunctions = require("./db/utilFunctions");
@@ -15,7 +14,6 @@ const Login = require("./db/models/Login.js");
 
 app.use(cors());
 app.use(bodyParser.json())
-app.use(cookieParser())
 
 function ensureAuthenticated(req, res, next) {
   //console.log("ik",req.user);
