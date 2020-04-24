@@ -108,15 +108,15 @@ app.get(
 );
 
 app.get("/sessioncheck", (req, res) => {
-  if (
-    ("passportauth", passport.authenticate("github", { scope: ["read:user"] }))
-  ) {
-    console.log(req);
-    res.json(req.user);
-  } else {
-    console.log(req);
-    res.json({ auth: false });
-  }
+  // if (
+  //   ("passportauth", passport.authenticate("github", { scope: ["read:user"] }))
+  // ) {
+  //   console.log(req);
+  //   res.json(req.user);
+  // } else {
+  console.log(req);
+  res.json({ auth: false });
+  // }
 });
 // app.get(
 //   "/auth/github/callback",
