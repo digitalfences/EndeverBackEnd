@@ -131,7 +131,7 @@ app.get("/logout", function (req, res) {
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
-      User.find({_id: { $ne: [ObjectId(user._id)]}}).populate('Login').populate('Account').then(users => {
+      User.find({_id: { $ne: user._id}}).populate('Login').populate('Account').then(users => {
         let matched = [];
         let liked = [];
         
