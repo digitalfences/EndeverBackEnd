@@ -130,9 +130,18 @@ app.get("/logout", function (req, res) {
 
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
-    User.find().populate('Login').populate('Account').then(user => {
-      user.sort(() => Math.random() - 0.5);
-      res.json(user)
+    User.findOne({ _id: req.user._id }).populate('Account').then(user => {
+      User.find().populate('Login').populate('Account').then(users => {
+        let matched = user.Account.MatchedUsers;
+        let liked = user.Account.LikedUsers;
+        matched.push(...liked);
+        let feed = users.filter(item=>{
+          let metAlready = matched.include(item)
+          return !metAlready;
+        })
+        feed.sort(() => Math.random() - 0.5);
+        res.json(feed)
+      })
     })
   }
   else {
@@ -206,15 +215,15 @@ app.put("/profile/:edit", (req, res) => {
 })
 
 app.delete('/users/:id', (req, res) => {
-  if(req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     User.findOneByDelete({ _id: req.params.id }).then(user => res.json(user))
   }
   else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
 })
-app.put('/like/:id', (req,res) => {
-  if(req.isAuthenticated()) {
+app.put('/like/:id', (req, res) => {
+  if (req.isAuthenticated()) {
     /* 
     Match Logic:
     req should have the id of the current login user, and the id of the profile that they like
@@ -230,7 +239,7 @@ app.put('/like/:id', (req,res) => {
 })
 
 app.get("/message/:id", (req, res) => {
-  if(req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
     Account.findOne({ Messages: req.params.id }).populate('Messages').then(messages => { res.json(messages) })
   }
   else {
