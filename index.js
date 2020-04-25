@@ -45,14 +45,8 @@ app.use(function (req, res, next) {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   res.header("Access-Control-Allow-Credentials", "true");
-  // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header(
-    "Access-Control-Allow-Origin",
-    // `${configs.FRONTEND_URL}`
-    "*"
-    // "https://tigerkingfront.netlify.app"
-    // "*"
-  );
+  //res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", `${configs.FRONTEND_URL}`);
   next();
 });
 
@@ -104,42 +98,18 @@ app.get(
   }),
   function (req, res) {
     console.log(req);
-    res.redirect(`${configs.FRONTEND_URL}/user`);
+    res.redirect(`${configs.FRONTEND_URL}/`);
   }
 );
 
 app.get("/sessioncheck", (req, res) => {
-  // if (
-  //   ("passportauth", passport.authenticate("github", { scope: ["read:user"] }))
-  // ) {
-  //   console.log(req);
-  //   res.json(req.user);
-  // } else {
-  //   console.log(req);
-  //   res.json({ auth: false });
-  // }
-  // let user = req.user;
-  // // let user = req._passport.session.user;
-  // if (user !== undefined) {
-  //   console.log(req);
-  //   res.json(req.user);
-  // } else {
-  //   console.log(req);
-  //   res.json({ auth: false });
-  // }
-  console.log("check session");
-  // console.log(req);
-  console.log(req.user);
-  // console.log(req.sessionID);
-  // console.log(req.session.passport);
-  // console.log(req.session.views);
-  // console.log(req.session.cookie);
-  // console.log(req._passport.session.user);
-  if (req.user !== undefined) {
-    // console.log(req);
+  if (
+    ("passportauth", passport.authenticate("github", { scope: ["read:user"] }))
+  ) {
+    console.log(req);
     res.json(req.user);
   } else {
-    // console.log(req);
+    console.log(req);
     res.json({ auth: false });
   }
 });
@@ -219,6 +189,25 @@ app.post("/", (req, res) => {
 app.put("/users/:id", (req, res) => {
   User.findOneAndUpdate({ _id: req.params.id }, req.body).then((user) => {
     res.json(user);
+  });
+});
+
+app.put("/profile/:edit", (req, res) => {
+  /*
+  req.params.edit = {}
+  we want to edit whatever fields are passed on the user object
+  req.body = {
+
+  }
+  */
+  User.find({ UserName: req.params.edit }).then((res) => {
+    if (res !== undefined) {
+      Account.findOneAndUpdate({ _id: res.Account }, req.body).then(
+        (account) => {
+          res.json(account);
+        }
+      );
+    }
   });
 });
 
