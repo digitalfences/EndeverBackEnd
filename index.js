@@ -129,7 +129,7 @@ app.get("/logout", function (req, res) {
 });
 
 app.get('/users', (req, res) => {
-  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if (req.isAuthenticated()) {
     User.find().populate('Login').populate('Account').then(user => res.json(user))
   }
   else {
