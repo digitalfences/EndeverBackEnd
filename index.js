@@ -137,7 +137,7 @@ app.get('/users', (req, res) => {
   }
 })
 app.get('/account/name/:userName', (req, res) => {
-  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if (req.isAuthenticated()) {
     User.find({ UserName: req.params.userName }).populate('Login').populate('Account').then(user => res.json(user))
   }
   else {
@@ -146,7 +146,7 @@ app.get('/account/name/:userName', (req, res) => {
 })
 
 app.get('/account/id/:id', (req, res) => {
-  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if (req.isAuthenticated()) {
     User.find({ _id: req.params.id }).populate('Login').populate('Account').then(user => res.json(user))
   }
   else {
@@ -170,7 +170,7 @@ app.get('/account/id/:id', (req, res) => {
 //app.post('/', (req,res) => { 
 //})
 app.put('/users/:id', (req, res) => {
-  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if (req.isAuthenticated()) {
     User.findOneAndUpdate({ _id: req.params.id }, req.body).then(user => {
       res.json(user)
     })
@@ -188,7 +188,7 @@ app.put("/profile/:edit", (req, res) => {
 
   }
   */
-  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if (req.isAuthenticated()) {
     User.find({ UserName: req.params.edit }).then(res => {
       if (res !== undefined) {
         Account.findOneAndUpdate({ _id: res.Account }, req.body).then(account => {
@@ -203,7 +203,7 @@ app.put("/profile/:edit", (req, res) => {
 })
 
 app.delete('/users/:id', (req, res) => {
-  if("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if(req.isAuthenticated()) {
     User.findOneByDelete({ _id: req.params.id }).then(user => res.json(user))
   }
   else {
@@ -213,7 +213,7 @@ app.delete('/users/:id', (req, res) => {
 
 
 app.get("/message/:id", (req, res) => {
-  if("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if(req.isAuthenticated()) {
     Account.findOne({ Messages: req.params.id }).populate('Messages').then(messages => { res.json(messages) })
   }
   else {
