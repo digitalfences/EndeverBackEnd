@@ -133,11 +133,13 @@ app.get('/users', (req, res) => {
     console.log("authenticated request", req)
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
       User.find().populate('Login').populate('Account').then(users => {
+        
+        
         let matched = user.Account.MatchedUsers;
         let liked = user.Account.LikedUsers;
         matched.push(...liked);
         let feed = users.filter(item=>{
-          let metAlready = matched.include(item)
+          let metAlready = matched.includes(item)
           return !metAlready;
         })
         feed.sort(() => Math.random() - 0.5);
