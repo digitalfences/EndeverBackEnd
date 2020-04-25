@@ -137,16 +137,25 @@ app.get('/users', (req, res) => {
         
         matched = user.Account.MatchedUsers.slice();
         liked = user.Account.LikedUsers.slice();
-        console.log(matched)
-       
         matched.push(...liked);
         
-        //let feed = users.filter(item => {
-
-        //})
-      //feed.sort(() => Math.random() - 0.5);
-      //res.json(feed)
-      res.json(users);
+        let feed = users.filter(item => {
+          let matchedItem = false;
+          //item._id === ?
+          //matched.forEach(item2 => item2._id)
+          matched.forEach(item2 => {
+            if (item2._id === item._id){
+              matchedItem = true;
+            }
+          })
+          return !matchedItem;
+          //item return
+          //return true = goes in feed
+          //return false = not go in feed
+        })
+        feed.sort(() => Math.random() - 0.5);
+        res.json(feed)
+        //res.json(users);
     })
   })
   }
