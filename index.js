@@ -104,7 +104,7 @@ app.get(
   }),
   function (req, res) {
     console.log(req);
-    res.redirect(`${configs.FRONTEND_URL}/`);
+    // res.redirect(`${configs.FRONTEND_URL}/`);
   }
 );
 
