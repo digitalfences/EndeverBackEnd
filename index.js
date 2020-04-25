@@ -135,7 +135,7 @@ app.get('/users', (req, res) => {
         let matched = [];
         let liked = [];
         matched = user.Account.MatchedUsers;
-        console.log(typeof matched)
+        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
         liked = user.Account.LikedUsers;
         matched.push(...liked,user);
         let feed = users.filter(item=>{
