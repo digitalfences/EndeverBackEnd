@@ -134,7 +134,10 @@ app.get('/users', (req, res) => {
       User.find().populate('Login').populate('Account').then(users => {
         let matched = [];
         let liked = [];
+        console.log(matched);
+        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
         matched = user.Account.MatchedUsers;
+        console.log(matched)
         console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
         liked = user.Account.LikedUsers;
         matched.push(...liked,user);
