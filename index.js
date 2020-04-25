@@ -137,6 +137,7 @@ app.get('/users', (req, res) => {
         
         matched = user.Account.MatchedUsers.slice();
         liked = user.Account.LikedUsers.slice();
+        
         matched.push(...liked);
         
         let feed = users.filter(item => {
