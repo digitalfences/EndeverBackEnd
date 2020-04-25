@@ -2,6 +2,7 @@ const mongoose = require("../connection.js");
 const Schema = mongoose.Schema;
 
 const Account = new Schema({
+  RealName: String,
   Picture: String,
   Bio: String,
   Repositories: [String],
