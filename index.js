@@ -134,24 +134,25 @@ app.get('/users', (req, res) => {
       User.find().populate('Login').populate('Account').then(users => {
         let matched = [];
         let liked = [];
-        console.log(matched);
-        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
-        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
-        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
-        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
-        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
-        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
-        matched = user.Account.MatchedUsers;
+        console.log( "THISIIIISSS THE LOOOGGGGGGG")
+        console.log("THISIIIISSS THE LOOOGGGGGGG")
+        console.log("THISIIIISSS THE LOOOGGGGGGG")
+        console.log("THISIIIISSS THE LOOOGGGGGGG")
+        console.log("THISIIIISSS THE LOOOGGGGGGG")
+        console.log("THISIIIISSS THE LOOOGGGGGGG")
+        matched= user.Account.MatchedUsers.slice();
+        liked= user.Account.LikedUsers.slice();
         console.log(matched)
-        console.log(typeof matched, "THISIIIISSS THE LOOOGGGGGGG")
-        liked = user.Account.LikedUsers;
-        matched.push(...liked,user);
+        console.log("THISIIIISSS THE LOOOGGGGGGG")
+        
+        matched.push(...liked);
+        matched.push(user);
         console.log(matched, "THISIIIISSS THE LOOOGGGGGGG")
         let feed = users.filter(item=>{
           let metAlready = matched.includes(item)
           return !metAlready;
         })
-        console.log(feed,"THISIIIISSS THE LOOOGGGGGGG" )
+        console.log(feed,"THISIIIISSS THE LOOOGGGGGGG")
         feed.sort(() => Math.random() - 0.5);
         res.json(feed)
       })
