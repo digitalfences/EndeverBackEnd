@@ -141,11 +141,12 @@ app.get('/users', (req, res) => {
        
         matched.push(...liked);
         
-        let feed = users.filter(item => {
+        //let feed = users.filter(item => {
 
-        })
-      feed.sort(() => Math.random() - 0.5);
-      res.json(feed)
+        //})
+      //feed.sort(() => Math.random() - 0.5);
+      //res.json(feed)
+      res.json(users);
     })
   })
   }
