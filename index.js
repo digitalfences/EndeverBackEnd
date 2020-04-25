@@ -14,9 +14,11 @@ const Login = require("./db/models/Login.js");
 
 app.use(cors());
 app.use(bodyParser.json())
-
+app.set('port', process.env.PORT || configs.PORT)
 app.use(userRouter)
-app.listen(configs.PORT);
+app.listen(app.get('port'), () => {
+  console.log(` PORT: ${app.get("port")} `);
+});
 
 function ensureAuthenticated(req, res, next) {
   //console.log("ik",req.user);
@@ -175,6 +177,24 @@ app.put('/users/:id', (req,res) =>{
     User.findOneAndUpdate({_id: req.params.id}, req.body).then(user => {
         res.json(user)
     })
+})
+
+app.put("/profile/:edit", (req,res) => {
+  /*
+  req.params.edit = {}
+  we want to edit whatever fields are passed on the user object
+  req.body = {
+
+  }
+  */
+ User.find({UserName: req.params.edit}).then(res => {
+   if(res !== undefined){
+     Account.findOneAndUpdate({_id: res.Account}, req.body).then(account => {
+        res.json(account)
+     })
+   }
+ })
+  
 })
 
 app.delete('/users/:id', (req,res) =>{
