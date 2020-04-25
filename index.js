@@ -131,26 +131,19 @@ app.get("/logout", function (req, res) {
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
-      User.find({_id: { $nin: [ObjectId(user._id)]}}).populate('Login').populate('Account').then(users => {
+      User.find({_id: { $ne: [ObjectId(user._id)]}}).populate('Login').populate('Account').then(users => {
         let matched = [];
         let liked = [];
-        console.log("THISIIIISSS THE LOOOGGGGGGG")
-        console.log("THISIIIISSS THE LOOOGGGGGGG")
-        console.log("THISIIIISSS THE LOOOGGGGGGG")
-        console.log("THISIIIISSS THE LOOOGGGGGGG")
-        console.log("THISIIIISSS THE LOOOGGGGGGG")
-        console.log("THISIIIISSS THE LOOOGGGGGGG")
+        
         matched = user.Account.MatchedUsers.slice();
         liked = user.Account.LikedUsers.slice();
         console.log(matched)
-        console.log("THISIIIISSS THE LOOOGGGGGGG")
+       
         matched.push(...liked);
-        console.log(matched, "THISIIIISSS THE LOOOGGGGGGG")
+        
         let feed = users.filter(item => {
 
         })
-  
-        //return "";
       feed.sort(() => Math.random() - 0.5);
       res.json(feed)
     })
