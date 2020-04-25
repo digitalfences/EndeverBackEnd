@@ -35,21 +35,12 @@ function checkUserOrSave(profile, done) {
                     console.log("user create Success!");
                     console.log("repos");
                     console.log(repoList);
-                    let feeds = [];
-                    User.find({}).then((users) => {
-                        if (users !== undefined) {
-                            for (_user in users) {
-                                feeds.push(_user._id);
-                            }
-                        }
-                    });
+
                     let account = {
                         Picture: userInfo.avatar_url,
                         Bio: userInfo.bio,
                         Repositories: repoList,
-                        Feed: feeds
                     };
-
                     Account.create(account).then((_account) => {
                         let user = {
                             UserName: _login.Username,
@@ -61,7 +52,7 @@ function checkUserOrSave(profile, done) {
                             return done(null, _user);
                         });
                     });
-                });
+                })
             } else {
                 return done(null, loginUser);
             }

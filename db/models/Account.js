@@ -8,7 +8,6 @@ const Account = new Schema({
   Repositories: [String],
   LikedUsers: [{type: Schema.Types.ObjectId, ref:"User"}],
   MatchedUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  Feed: [{ type: Schema.Types.ObjectId, ref: "User" }],
   Messages: [{ type: Schema.Types.ObjectId, ref: "MessageHistory" }],
 });
 

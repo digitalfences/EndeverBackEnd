@@ -213,7 +213,21 @@ app.delete('/users/:id', (req, res) => {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
 })
+app.put('/like/:id', (req,res) => {
+  if(req.isAuthenticated()) {
+    /* 
+    Match Logic:
+    req should have the id of the current login user, and the id of the profile that they like
+    then it should check the like array of the person being liked to see if they like current user
+    then if user is present, add them to each others match array and delete from likes
+    else add the target to users liked array and return
+    */
+    User.findOneByDelete({ _id: req.params.id }).then(user => res.json(user))
+  }
+  else {
 
+  }
+})
 
 app.get("/message/:id", (req, res) => {
   if(req.isAuthenticated()) {
