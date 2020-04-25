@@ -130,7 +130,10 @@ app.get("/logout", function (req, res) {
 
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
-    User.find().populate('Login').populate('Account').then(user => res.json(user))
+    User.find().populate('Login').populate('Account').then(user => {
+      user.sort(() => Math.random() - 0.5);
+      res.json(user)
+    })
   }
   else {
     res.redirect(`${configs.FRONTEND_URL}`);

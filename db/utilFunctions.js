@@ -4,10 +4,10 @@ const Account = require("./models/Account");
 const User = require("./models/User");
 
 //https://stackoverflow.com/questions/3718282/javascript-shuffling-objects-inside-an-object-randomize
-const shuffle = (sourceArray) => {
-    for (var i = 0; i < sourceArray.length - 1; i++) {
-        var j = i + Math.floor(Math.random() * (sourceArray.length - i));
-        var temp = sourceArray[j];
+function shuffle (sourceArray) {
+    for (let i = 0; i < sourceArray.length - 1; i++) {
+        let j = i + Math.floor(Math.random() * (sourceArray.length - i));
+        let temp = sourceArray[j];
         sourceArray[j] = sourceArray[i];
         sourceArray[i] = temp;
     }
