@@ -130,7 +130,7 @@ app.get("/logout", function (req, res) {
 
 app.get('/users', (req, res) => {
   if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
-    User.find().populate('Login').populate('Account').then(user => res.json(utilFunction.shuffle(user)))
+    User.find().populate('Login').populate('Account').then(user => res.json(user))
   }
   else {
     res.redirect(`${configs.FRONTEND_URL}`);
