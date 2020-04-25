@@ -22,7 +22,7 @@ app.listen(app.get('port'), () => {
 
 function ensureAuthenticated(req, res, next) {
   //console.log("ik",req.user);
-  
+
   res.json({});
   if (req.isAuthenticated()) {
     return next();
@@ -83,7 +83,7 @@ app.get("/login", (req, res) => {
 app.get(
   "/auth/github",
   passport.authenticate("github", { scope: ["read:user"] }), /// Note the scope here
-  function (req, res) {}
+  function (req, res) { }
 );
 
 app.get(
@@ -98,15 +98,15 @@ app.get(
   }
 );
 
-app.get("/sessioncheck",  (req, res) => {
-  
-  if("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
-      console.log(req);
-      res.json(req.user);
+app.get("/sessioncheck", (req, res) => {
+
+  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    console.log(req);
+    res.json(req.user);
   }
   else {
-      console.log(req);
-      res.json({auth: false});
+    console.log(req);
+    res.json({ auth: false });
   }
 });
 // app.get(
@@ -128,58 +128,59 @@ app.get("/logout", function (req, res) {
   res.redirect(`${configs.FRONTEND_URL}`);
 });
 
-app.get('/users', (req,res)=>{
-    User.find().populate('Login').populate('Account').then(user => res.json(user))
+app.get('/users', (req, res) => {
+  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    User.find().populate('Login').populate('Account').then(user => res.json(utilFunction.shuffle(user)))
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
 })
-app.get('/account/name/:userName', (req,res)=>{
-    User.find({UserName : req.params.userName}).populate('Login').populate('Account').then(user => res.json(user))
-})
-app.get('/account/id/:id', (req,res)=> {
-    User.find({_id: req.params.id}).populate('Login').populate('Account').then(user => res.json(user))
-})
- /**
-  * req.body
-  * {
-  *    Login: {
-  *         Token: '',
-  *         Name: ''
-  *     }
-  *    Account: {
-  *         Picture: '',
-  *         Bio: '',
-  *         Repositories: ['']
-  *     }
-  * }
-  */
-app.post('/', (req,res) => {
-    let login = new Login({
-        Username: req.body.Login.Username, 
-        Token: req.body.Login.Token
-    })
-    let repoArray = [];
-    repoArray.push(...req.body.Account.Repositories)
-    let account = new Account({
-        Picture: req.body.Account.Picture,
-        Bio: req.body.Account.Bio,
-        Repositories: repoArray
-    })
-    let user = {
-        Login : login._id,
-        Account : account._id
-    }
-    User.create(user).then(responseData=>{
-        console.log(responseData);
-    })
-    Login.create(login);
-    Account.create(account);
-})
-app.put('/users/:id', (req,res) =>{
-    User.findOneAndUpdate({_id: req.params.id}, req.body).then(user => {
-        res.json(user)
-    })
+app.get('/account/name/:userName', (req, res) => {
+  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    User.find({ UserName: req.params.userName }).populate('Login').populate('Account').then(user => res.json(user))
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
 })
 
-app.put("/profile/:edit", (req,res) => {
+app.get('/account/id/:id', (req, res) => {
+  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    User.find({ _id: req.params.id }).populate('Login').populate('Account').then(user => res.json(user))
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+})
+/**
+ * req.body
+ * {
+ *    Login: {
+ *         Token: '',
+ *         Name: ''
+ *     }
+ *    Account: {
+ *         Picture: '',
+ *         Bio: '',
+ *         Repositories: ['']
+ *     }
+ * }
+ */
+//app.post('/', (req,res) => { 
+//})
+app.put('/users/:id', (req, res) => {
+  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    User.findOneAndUpdate({ _id: req.params.id }, req.body).then(user => {
+      res.json(user)
+    })
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+})
+
+app.put("/profile/:edit", (req, res) => {
   /*
   req.params.edit = {}
   we want to edit whatever fields are passed on the user object
@@ -187,22 +188,36 @@ app.put("/profile/:edit", (req,res) => {
 
   }
   */
- User.find({UserName: req.params.edit}).then(res => {
-   if(res !== undefined){
-     Account.findOneAndUpdate({_id: res.Account}, req.body).then(account => {
-        res.json(account)
-     })
-   }
- })
-  
+  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    User.find({ UserName: req.params.edit }).then(res => {
+      if (res !== undefined) {
+        Account.findOneAndUpdate({ _id: res.Account }, req.body).then(account => {
+          res.json(account)
+        })
+      }
+    })
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
 })
 
-app.delete('/users/:id', (req,res) =>{
-    User.findOneByDelete({_id: req.params.id}).then(user => res.json(user))
+app.delete('/users/:id', (req, res) => {
+  if("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    User.findOneByDelete({ _id: req.params.id }).then(user => res.json(user))
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
 })
 
 
-app.get("/message/:id", (req,res) => {
-  Account.findOne({Messages: req.params.id}).populate('Messages').then(messages => {res.json(messages)})
+app.get("/message/:id", (req, res) => {
+  if("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+    Account.findOne({ Messages: req.params.id }).populate('Messages').then(messages => { res.json(messages) })
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
 })
 

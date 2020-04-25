@@ -2,6 +2,17 @@ const fetch = require("node-fetch");
 const Login = require("./models/Login");
 const Account = require("./models/Account");
 const User = require("./models/User");
+
+//https://stackoverflow.com/questions/3718282/javascript-shuffling-objects-inside-an-object-randomize
+const shuffle = (sourceArray) => {
+    for (var i = 0; i < sourceArray.length - 1; i++) {
+        var j = i + Math.floor(Math.random() * (sourceArray.length - i));
+        var temp = sourceArray[j];
+        sourceArray[j] = sourceArray[i];
+        sourceArray[i] = temp;
+    }
+    return sourceArray;
+}
 function checkUserOrSave(profile, done) {
     let userInfo = profile._json;
     let userName = userInfo.login;
@@ -47,4 +58,4 @@ function checkUserOrSave(profile, done) {
         });
     })
   }
-module.exports = { checkUserOrSave };
+module.exports = { checkUserOrSave , shuffle};
