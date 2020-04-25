@@ -134,10 +134,9 @@ app.get('/users', (req, res) => {
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
       User.find().populate('Login').populate('Account').then(users => {
         
-        
         let matched = user.Account.MatchedUsers;
         let liked = user.Account.LikedUsers;
-        matched.push(...liked);
+        matched.push(...liked,user);
         let feed = users.filter(item=>{
           let metAlready = matched.includes(item)
           return !metAlready;
