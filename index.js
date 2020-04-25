@@ -130,7 +130,6 @@ app.get("/logout", function (req, res) {
 
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
-    console.log("authenticated request", req)
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
       User.find().populate('Login').populate('Account').then(users => {
         let matched = [];
