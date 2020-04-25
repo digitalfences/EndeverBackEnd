@@ -48,7 +48,8 @@ app.use(function (req, res, next) {
   // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header(
     "Access-Control-Allow-Origin",
-    "*"
+    `${configs.FRONTEND_URL}`
+    // "*"
     // "https://tigerkingfront.netlify.app"
     // "*"
   );
@@ -117,14 +118,28 @@ app.get("/sessioncheck", (req, res) => {
   //   console.log(req);
   //   res.json({ auth: false });
   // }
-
-  let user = req.user;
-  // let user = req._passport.session.user;
-  if (user !== undefined) {
-    console.log(req);
+  // let user = req.user;
+  // // let user = req._passport.session.user;
+  // if (user !== undefined) {
+  //   console.log(req);
+  //   res.json(req.user);
+  // } else {
+  //   console.log(req);
+  //   res.json({ auth: false });
+  // }
+  console.log("check session");
+  // console.log(req);
+  console.log(req.user);
+  // console.log(req.sessionID);
+  // console.log(req.session.passport);
+  // console.log(req.session.views);
+  // console.log(req.session.cookie);
+  // console.log(req._passport.session.user);
+  if (req.user !== undefined) {
+    // console.log(req);
     res.json(req.user);
   } else {
-    console.log(req);
+    // console.log(req);
     res.json({ auth: false });
   }
 });
