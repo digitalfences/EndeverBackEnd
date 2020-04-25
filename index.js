@@ -131,9 +131,11 @@ app.get("/logout", function (req, res) {
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
+      
       User.find().populate('Login').populate('Account').then(users => {
         let matched = [];
         let liked = [];
+        let userClone = JSON.parse(JSON.stringify(user));
         console.log( "THISIIIISSS THE LOOOGGGGGGG")
         console.log("THISIIIISSS THE LOOOGGGGGGG")
         console.log("THISIIIISSS THE LOOOGGGGGGG")
@@ -144,9 +146,8 @@ app.get('/users', (req, res) => {
         liked= user.Account.LikedUsers.slice();
         console.log(matched)
         console.log("THISIIIISSS THE LOOOGGGGGGG")
-        
         matched.push(...liked);
-        matched.push(user);
+        matched.push(userClone);
         console.log(matched, "THISIIIISSS THE LOOOGGGGGGG")
         let feed = users.filter(item=>{
           let metAlready = matched.includes(item)
