@@ -7,16 +7,16 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const userRouter = require("./db/routes/userRouter");
 const utilFunctions = require("./db/utilFunctions");
 const configs = require("./db/configs.js");
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
 const User = require("./db/models/User.js");
 const Account = require("./db/models/Account.js");
 const Login = require("./db/models/Login.js");
 
 app.use(cors());
-app.use(bodyParser.json())
-app.set('port', process.env.PORT || configs.PORT)
-app.use(userRouter)
-app.listen(app.get('port'), () => {
+app.use(bodyParser.json());
+app.set("port", process.env.PORT || configs.PORT);
+app.use(userRouter);
+app.listen(app.get("port"), () => {
   console.log(` PORT: ${app.get("port")} `);
 });
 
@@ -39,10 +39,16 @@ passport.deserializeUser(function (obj, done) {
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "POST,GET,PATCH,PUT,DELETE");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   res.header("Access-Control-Allow-Credentials", "true");
   //res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Origin", "https://agitated-panini-b410aa.netlify.app");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://agitated-panini-b410aa.netlify.app"
+  );
   next();
 });
 
@@ -83,7 +89,7 @@ app.get("/login", (req, res) => {
 app.get(
   "/auth/github",
   passport.authenticate("github", { scope: ["read:user"] }), /// Note the scope here
-  function (req, res) { }
+  function (req, res) {}
 );
 
 app.get(
@@ -93,18 +99,18 @@ app.get(
     // successRedirect: "http://localhost:3000/user/",
   }),
   function (req, res) {
-    console.log(req)
+    console.log(req);
     res.redirect(`${configs.FRONTEND_URL}/`);
   }
 );
 
 app.get("/sessioncheck", (req, res) => {
-
-  if ("passportauth", passport.authenticate("github", { scope: ["read:user"] })) {
+  if (
+    ("passportauth", passport.authenticate("github", { scope: ["read:user"] }))
+  ) {
     console.log(req);
     res.json(req.user);
-  }
-  else {
+  } else {
     console.log(req);
     res.json({ auth: false });
   }
@@ -128,34 +134,40 @@ app.get("/logout", function (req, res) {
   res.redirect(`${configs.FRONTEND_URL}`);
 });
 
-app.get('/users', (req, res) => {
+app.get("/users", (req, res) => {
   if (req.isAuthenticated()) {
-    User.find().populate('Login').populate('Account').then(user => {
-      user.sort(() => Math.random() - 0.5);
-      res.json(user)
-    })
-  }
-  else {
+    User.find()
+      .populate("Login")
+      .populate("Account")
+      .then((user) => {
+        user.sort(() => Math.random() - 0.5);
+        res.json(user);
+      });
+  } else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
-})
-app.get('/account/name/:userName', (req, res) => {
+});
+app.get("/account/name/:userName", (req, res) => {
   if (req.isAuthenticated()) {
-    User.find({ UserName: req.params.userName }).populate('Login').populate('Account').then(user => res.json(user))
-  }
-  else {
+    User.find({ UserName: req.params.userName })
+      .populate("Login")
+      .populate("Account")
+      .then((user) => res.json(user));
+  } else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
-})
+});
 
-app.get('/account/id/:id', (req, res) => {
+app.get("/account/id/:id", (req, res) => {
   if (req.isAuthenticated()) {
-    User.find({ _id: req.params.id }).populate('Login').populate('Account').then(user => res.json(user))
-  }
-  else {
+    User.find({ _id: req.params.id })
+      .populate("Login")
+      .populate("Account")
+      .then((user) => res.json(user));
+  } else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
-})
+});
 /**
  * req.body
  * {
@@ -170,18 +182,17 @@ app.get('/account/id/:id', (req, res) => {
  *     }
  * }
  */
-//app.post('/', (req,res) => { 
+//app.post('/', (req,res) => {
 //})
-app.put('/users/:id', (req, res) => {
+app.put("/users/:id", (req, res) => {
   if (req.isAuthenticated()) {
-    User.findOneAndUpdate({ _id: req.params.id }, req.body).then(user => {
-      res.json(user)
-    })
-  }
-  else {
+    User.findOneAndUpdate({ _id: req.params.id }, req.body).then((user) => {
+      res.json(user);
+    });
+  } else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
-})
+});
 
 app.put("/profile/:edit", (req, res) => {
   /*
@@ -192,35 +203,134 @@ app.put("/profile/:edit", (req, res) => {
   }
   */
   if (req.isAuthenticated()) {
-    User.find({ UserName: req.params.edit }).then(res => {
+    User.find({ UserName: req.params.edit }).then((res) => {
       if (res !== undefined) {
-        Account.findOneAndUpdate({ _id: res.Account }, req.body).then(account => {
-          res.json(account)
-        })
+        Account.findOneAndUpdate({ _id: res.Account }, req.body).then(
+          (account) => {
+            res.json(account);
+          }
+        );
       }
-    })
-  }
-  else {
+    });
+  } else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
-})
+});
 
-app.delete('/users/:id', (req, res) => {
-  if(req.isAuthenticated()) {
-    User.findOneByDelete({ _id: req.params.id }).then(user => res.json(user))
-  }
-  else {
+app.delete("/users/:id", (req, res) => {
+  if (req.isAuthenticated()) {
+    User.findOneByDelete({ _id: req.params.id }).then((user) => res.json(user));
+  } else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
-})
-
+});
 
 app.get("/message/:id", (req, res) => {
-  if(req.isAuthenticated()) {
-    Account.findOne({ Messages: req.params.id }).populate('Messages').then(messages => { res.json(messages) })
-  }
-  else {
+  if (req.isAuthenticated()) {
+    Account.findOne({ Messages: req.params.id })
+      .populate("Messages")
+      .then((messages) => {
+        res.json(messages);
+      });
+  } else {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
-})
+});
 
+app.put("/like/:likedUserId", (req, res) => {
+  if (req.isAuthenticated()) {
+    let currentUserId = req.user._id;
+    let currentUserAccountId = req.user.Account;
+
+    let likedUserId = req.params.likedUserId;
+
+    Account.findOne({ _id: currentUserAccountId }).then(
+      (currentUserAccount) => {
+        let currentUserLikedUsers = currentUserAccount.LikedUsers;
+
+        User.find({ _id: likedUserId }).then((likedUser) => {
+          Account.findOne({
+            _id: likedUser.Account,
+          })
+            .then((likedUserAccount) => {
+              let likedUserLikedUsers = likedUserAccount.LikedUsers;
+              if (likedUserLikedUsers.length > 0) {
+                let _index = likedUserLikedUsers.indexOf(currentUserId);
+                if (_index !== -1) {
+                  // if current user in liked user's like list
+                  let likedUserMatchedUsers = likedUserAccount.MatchedUsers;
+                  likedUserMatchedUsers.push(currentUserId);
+                  likedUserLikedUsers.splice(_index, 1);
+
+                  likedUserAccount.save();
+
+                  let currentUserMatchedUsers = currentUserAccount.MatchedUsers;
+                  currentUserMatchedUsers.push(likedUserId);
+                  currentUserAccount.save();
+                } else {
+                  // if current user in liked user's like list
+                  currentUserLikedUsers.push(likedUserId);
+                  currentUserAccount.save();
+                }
+              } else {
+                // likedUser's like user list is  empty
+                currentUserLikedUsers.push(likedUserId);
+                currentUserAccount.save();
+              }
+            })
+            .then((res) => {
+              res.json(req.user);
+            });
+        });
+      }
+    );
+  } else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+});
+
+app.put("/unlike/:unlikedUserId", (req, res) => {
+  if (req.isAuthenticated()) {
+    let currentUserId = req.user._id;
+    let currentUserAccountId = req.user.Account;
+
+    let unlikedUserId = req.params.unlikedUserId;
+
+    Account.findOne({ _id: currentUserAccountId }).then(
+      (currentUserAccount) => {
+        User.find({ _id: unlikedUserId }).then((unlikedUser) => {
+          Account.findOne({
+            _id: unlikedUser.Account,
+          })
+            .then((unlikedUserAccount) => {
+              let unlikedUserMatchedUsers = unlikedUserAccount.MatchedUsers;
+              let _index = unlikedUserMatchedUsers.indexOf(currentUserId);
+              if (_index !== -1) {
+                let unlikedUserLikedUsers = unlikedUserAccount.LikedUsers;
+                unlikedUserLikedUsers.push(currentUserId);
+
+                unlikedUserMatchedUsers.splice(_index, 1);
+
+                unlikedUserAccount.save();
+
+                let currentUserMatchedUsers = currentUserAccount.MatchedUsers;
+                _index = currentUserMatchedUsers.indexOf(unlikedUserId);
+                currentUserMatchedUsers.splice(_index, 1);
+                currentUserAccount.save();
+              } else {
+                let currentUserLikedUsers = currentUserAccount.LikedUsers;
+                let _index = currentUserLikedUsers.indexOf(unlikedUserId);
+                currentUserLikedUsers.splice(_index, 1);
+                currentUserAccount.save();
+              }
+            })
+            .then((res) => {
+              res.json(req.user);
+            });
+        });
+      }
+    );
+  } else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+});
