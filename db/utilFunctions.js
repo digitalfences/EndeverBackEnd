@@ -46,6 +46,7 @@ function checkUserOrSave(profile, done) {
               }
             });
             let account = {
+              RealName: name,
               Picture: userInfo.avatar_url,
               Bio: userInfo.bio,
               Repositories: repoList,
