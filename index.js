@@ -128,6 +128,105 @@ app.get("/logout", function (req, res) {
   res.redirect(`${configs.FRONTEND_URL}`);
 });
 
+app.put("/like/:likedUserId", (req, res) => {
+   /* 
+    Match Logic:
+    req should have the id of the current login user, params the id of the profile that they like
+    then it should check the like array of the person being liked to see if they like current user
+    then if user is present, add them to each others match array and delete from likes
+    else add the target to users liked array and return
+    */
+  if (req.isAuthenticated()) {
+    let currentUserId = req.user._id;
+    let likedUserAccountId = req.params.likedUserAccountId;
+    Account.findOne({_id: likedUserAccountId}).then (LikedAccount => {
+
+        let LikesArray = LikedAccount.LikedUsers.slice();
+        Account.findOneAndUpdate({Bio: LikededAccount.Bio}, {Bio: "red"});
+
+        if (currentUserId in LikedAccount.LikedUsers){
+          
+        }
+    })
+  }
+})
+/*
+    Account.findOne({ _id: currentUserAccountId }).then(
+      (currentUserAccount) => {
+        let currentUserLikedUsers = currentUserAccount.LikedUsers;
+        User.find({ _id: likedUserId }).then((likedUser) => {
+          Account.findOne({
+            _id: likedUser.Account,
+          })
+            .then((likedUserAccount) => {
+              let likedUserLikedUsers = likedUserAccount.LikedUsers;
+              if (likedUserLikedUsers.length > 0) {
+                let _index = likedUserLikedUsers.indexOf(currentUserId);
+                if (_index !== -1) {
+                  // if current user in liked user's like list
+                  let likedUserMatchedUsers = likedUserAccount.MatchedUsers;
+                  //Account { _id : MatchedUsers: LikedUsers: }
+                  Account.findOneAndUpdate({_id: likedUser})likedUserMatchedUsers.push(currentUserId);
+                  let currentUserMatchedUsers = currentUserAccount.MatchedUsers;
+                  currentUserMatchedUsers.push(likedUserId);
+                  likedUserLikedUsers.splice(_index, 1);
+                } else {
+                  // if current user in liked user's like list
+                  currentUserLikedUsers.push(likedUserId);
+                }
+              } else {
+                // likedUser's like user list is  empty
+                currentUserLikedUsers.push(likedUserId);
+              }
+            })
+            .then((res) => {
+              res.json(req.user);
+            });
+        });
+      }
+    );
+  } else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+});
+app.put("/unlike/:unlikedUserId", (req, res) => {
+  if (req.isAuthenticated()) {
+    let currentUserId = req.user._id;
+    let currentUserAccountId = req.user.Account;
+    let unlikedUserId = req.params.unlikedUserId;
+    Account.findOne({ _id: currentUserAccountId }).then(
+      (currentUserAccount) => {
+        User.find({ _id: unlikedUserId }).then((unlikedUser) => {
+          Account.findOne({
+            _id: unlikedUser.Account,
+          })
+            .then((unlikedUserAccount) => {
+              let unlikedUserMatchedUsers = unlikedUserAccount.MatchedUsers;
+              let _index = unlikedUserMatchedUsers.indexOf(currentUserId);
+              if (_index !== -1) {
+                let unlikedUserLikedUsers = unlikedUserAccount.LikedUsers;
+                unlikedUserLikedUsers.push(currentUserId);
+                unlikedUserMatchedUsers.splice(_index, 1);
+                let currentUserMatchedUsers = currentUserAccount.MatchedUsers;
+                _index = currentUserMatchedUsers.indexOf(unlikedUserId);
+                currentUserMatchedUsers.splice(_index, 1);
+              } else {
+                let currentUserLikedUsers = currentUserAccount.LikedUsers;
+                let _index = currentUserLikedUsers.indexOf(unlikedUserId);
+                currentUserLikedUsers.splice(_index, 1);
+              }
+            })
+            .then((res) => {
+              res.json(req.user);
+            });
+        });
+      }
+    );
+  } else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+});
+*/
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
