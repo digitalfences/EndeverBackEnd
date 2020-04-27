@@ -128,24 +128,102 @@ app.get("/logout", function (req, res) {
   res.redirect(`${configs.FRONTEND_URL}`);
 });
 
+app.put("/like/:likedUserId", (req, res) => {
+  /* 
+   Match Logic:
+   req should have the id of the current login user, params the id of the profile that they like
+   then it should check the like array of the person being liked to see if they like current user
+   then if user is present, add them to each others match array and delete from likes
+   else add the target to users liked array and return
+   */
+  if (req.isAuthenticated()) {
+    let currentUserId = req.user._id;
+    let likedUserAccountId = req.params.likedUserAccountId;
+    Account.findOne({ _id: likedUserAccountId }).then(LikedAccount => {
+      let LikesArray = LikedAccount.LikedUsers.slice();
+      let MatchesArray = LikedAccount.MatchedUsers.slice();
+
+      let idx = LikesArray.indexOf(currentUserId);
+      if (idx !== -1) {
+        MatchesArray.push(currentUserId)
+        LikesArray = LikesArray.splice(idx, 1)
+        Account.findOne({ _id: req.user.Account }.then(UserAccount => {
+          UserMatches = UserAccount.MatchedUsers.slice();
+          UserMatches.push(likedUserAccountId);
+          Account.findOneAndUpdate({ _id: UserAccount._id }, { MatchedUsers: UserMatches })
+          Account.findOneAndUpdate({ _id: likedUserAccountId }, { MatchedUsers: MatchesArray, LikedUsers: LikesArray })
+        }))
+      }
+      else {
+        Account.findOne({ _id: currentUserId }).then(UserAccount => {
+          let UserLikes = UserAccount.LikedUsers.slice();
+          UserLikes.push(likedUserAccountId);
+          Account.findOneAndUpdate({ _id: UserAccount._id }, { LikedUsers: UserLikes })
+        })
+      }
+    })
+  } else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+});
+{/*
+app.put("/unlike/:unlikedUserId", (req, res) => {
+  if (req.isAuthenticated()) {
+    let currentUserId = req.user._id;
+    let currentUserAccountId = req.user.Account;
+    let unlikedUserId = req.params.unlikedUserId;
+    Account.findOne({ _id: currentUserAccountId }).then(
+      (currentUserAccount) => {
+        User.find({ _id: unlikedUserId }).then((unlikedUser) => {
+          Account.findOne({
+            _id: unlikedUser.Account,
+          })
+            .then((unlikedUserAccount) => {
+              let unlikedUserMatchedUsers = unlikedUserAccount.MatchedUsers;
+              let _index = unlikedUserMatchedUsers.indexOf(currentUserId);
+              if (_index !== -1) {
+                let unlikedUserLikedUsers = unlikedUserAccount.LikedUsers;
+                unlikedUserLikedUsers.push(currentUserId);
+                unlikedUserMatchedUsers.splice(_index, 1);
+                let currentUserMatchedUsers = currentUserAccount.MatchedUsers;
+                _index = currentUserMatchedUsers.indexOf(unlikedUserId);
+                currentUserMatchedUsers.splice(_index, 1);
+              } else {
+                let currentUserLikedUsers = currentUserAccount.LikedUsers;
+                let _index = currentUserLikedUsers.indexOf(unlikedUserId);
+                currentUserLikedUsers.splice(_index, 1);
+              }
+            })
+            .then((res) => {
+              res.json(req.user);
+            });
+        });
+      }
+    );
+  } else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+});
+
+*/}
 app.get('/users', (req, res) => {
   if (req.isAuthenticated()) {
     User.findOne({ _id: req.user._id }).populate('Account').then(user => {
-      User.find({_id: { $ne: req.user._id}}).populate('Login').populate('Account').then(users => {
+      User.find({ _id: { $ne: req.user._id } }).populate('Login').populate('Account').then(users => {
         let matched = [];
         let liked = [];
-        
+
         matched = user.Account.MatchedUsers.slice();
         liked = user.Account.LikedUsers.slice();
-        
+
         matched.push(...liked);
-        
+
         let feed = users.filter(item => {
           let matchedItem = false;
           //item._id === ?
           //matched.forEach(item2 => item2._id)
           matched.forEach(item2 => {
-            if (item2._id === item._id){
+            if (item2._id === item._id) {
               matchedItem = true;
             }
           })
@@ -157,12 +235,12 @@ app.get('/users', (req, res) => {
         feed.sort(() => Math.random() - 0.5);
         res.json(feed)
         //res.json(users);
+      })
     })
-  })
   }
   else {
-  res.redirect(`${configs.FRONTEND_URL}`);
-}
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
 })
 app.get('/account/name/:userName', (req, res) => {
   if (req.isAuthenticated()) {
