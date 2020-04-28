@@ -10,7 +10,5 @@ User.find({UserName: "Daniel-Edminster"}).then(daniel => {
             userArray.push(user._id)
         })
     })
-    Account.findOneAndUpdate({_id: daniel.Account}, {MatchedUsers: userArray}).then(danielAccount => {
-        res.json(danielAccount)
-    })
+    Account.findOneAndUpdate({_id: daniel.Account}, {MatchedUsers: userArray})
 })
