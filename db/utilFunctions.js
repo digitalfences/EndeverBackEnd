@@ -26,7 +26,7 @@ function checkUserOrSave(profile, done) {
                 repoList.push(repoUrl);
             }
         });
-        User.findOne({ UserName: userName }).then((loginUser) => {
+        User.findOne({ UserName: userName }).populate('Account').then((loginUser) => {
             if (loginUser === null || loginUser === undefined) {
                 let _loginUser = {
                     Username: userName
@@ -49,8 +49,7 @@ function checkUserOrSave(profile, done) {
                             Login: _login._id,
                             Account: _account._id
                         };
-                        User.create(user).then((_user) => {
-
+                        User.create(user).populate('Account').then((_user) => {
                             return done(null, _user);
                         });
                     });
