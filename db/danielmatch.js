@@ -5,7 +5,7 @@ const Account = require('./models/Account.js')
 
 User.find({UserName: "Daniel-Edminster"}).then(daniel => {
     let userArray = [];
-    User.find({_id : { $ne: req.user._id } }).then (users => {
+    User.find({_id : { $ne: daniel._id } }).then (users => {
         users.forEach((user) => {
             userArray.push(user._id)
         })
