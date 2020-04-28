@@ -250,6 +250,18 @@ app.get('/account/name/:userName', (req, res) => {
     res.redirect(`${configs.FRONTEND_URL}`);
   }
 })
+app.get('/matches/:id', (req,res) => {
+  if(req.isAuthenticated()) {
+    User.findOne({_id: req.params.id}.then(user=> {
+      Account.findOne({_id: user.Account}).populate('MatchedUsers').populate('Messages').then(account => {
+        res.json(account)
+      })
+    }))
+  }
+  else {
+    res.redirect(`${configs.FRONTEND_URL}`);
+  }
+})
 
 app.get('/account/id/:id', (req, res) => {
   if (req.isAuthenticated()) {
@@ -275,29 +287,20 @@ app.get('/account/id/:id', (req, res) => {
  */
 //app.post('/', (req,res) => { 
 //})
-app.put('/users/:id', (req, res) => {
-  if (req.isAuthenticated()) {
-    User.findOneAndUpdate({ _id: req.params.id }, req.body).then(user => {
-      res.json(user)
-    })
-  }
-  else {
-    res.redirect(`${configs.FRONTEND_URL}`);
-  }
-})
 
-app.put("/profile/:edit", (req, res) => {
+app.put("/profile/:id", (req, res) => {
   /*
-  req.params.edit = {}
   we want to edit whatever fields are passed on the user object
   req.body = {
-
+    RealName:String
+    Bio: String
+    Workplace: String
   }
   */
   if (req.isAuthenticated()) {
-    User.find({ UserName: req.params.edit }).then(res => {
-      if (res !== undefined) {
-        Account.findOneAndUpdate({ _id: res.Account }, req.body).then(account => {
+    User.find({ _id: req.params.id }).then(user => {
+      if (user !== undefined) {
+        Account.findOneAndUpdate({ _id: user.Account }, req.body).then(account => {
           res.json(account)
         })
       }
@@ -310,7 +313,7 @@ app.put("/profile/:edit", (req, res) => {
 
 app.delete('/users/:id', (req, res) => {
   if (req.isAuthenticated()) {
-    User.findOneByDelete({ _id: req.params.id }).then(user => res.json(user))
+    User.findOneAndDelete({ _id: req.params.id }).then(user => res.json(user))
   }
   else {
     res.redirect(`${configs.FRONTEND_URL}`);

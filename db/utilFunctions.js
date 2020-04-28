@@ -37,6 +37,8 @@ function checkUserOrSave(profile, done) {
                     console.log(repoList);
 
                     let account = {
+                        RealName: userInfo.name,
+                        WorkPlace: userInfo.company,
                         Picture: userInfo.avatar_url,
                         Bio: userInfo.bio,
                         Repositories: repoList,
