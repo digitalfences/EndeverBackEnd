@@ -3,7 +3,6 @@ const Login = require("./models/Login");
 const Account = require("./models/Account");
 const User = require("./models/User");
 
-//https://stackoverflow.com/questions/3718282/javascript-shuffling-objects-inside-an-object-randomize
 function shuffle(sourceArray) {
     for (let i = 0; i < sourceArray.length - 1; i++) {
         let j = i + Math.floor(Math.random() * (sourceArray.length - i));
@@ -49,12 +48,13 @@ function checkUserOrSave(profile, done) {
                             Login: _login._id,
                             Account: _account._id
                         };
-                        User.create(user).populate('Account').then((_user) => {
+                        User.create(user).then((_user) => {
+                            console.log(_user);
                             return done(null, _user);
                         });
                     });
                 })
-            } else {
+            } else {console.log(loginUser)
                 return done(null, loginUser);
             }
             // end of then
