@@ -6,7 +6,7 @@ const cors = require("cors");
 const GitHubStrategy = require("passport-github2").Strategy;
 const userRouter = require("./db/routes/userRouter");
 const utilFunctions = require("./db/utilFunctions");
-const configs = require("./db/config_dev.js");
+const configs = require("./db/configs.js");
 const bodyParser = require('body-parser')
 const User = require("./db/models/User.js");
 const Account = require("./db/models/Account.js");
@@ -41,8 +41,8 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "POST,GET,PATCH,PUT,DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Origin", "http://localhost:3001");
-  //res.header("Access-Control-Allow-Origin", "https://agitated-panini-b410aa.netlify.app");
+  //res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "https://agitated-panini-b410aa.netlify.app");
   next();
 });
 
